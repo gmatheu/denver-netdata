@@ -55,6 +55,13 @@ def get_service_file(facts)
       else
         '/etc/systemd/system/netdata.service'
       end
+    when "Debian"
+      case facts[:operatingsystemrelease]
+      when /^(9).*/
+        '/etc/systemd/system/multi-user.target.wants/netdata.service'
+      else
+        raise Exception, "Debian release not supported"
+      end
     when 'CentOS'
       case facts[:operatingsystemrelease]
       when /^(7).*/
