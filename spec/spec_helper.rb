@@ -46,6 +46,25 @@ def on_os_under_test
   end
 end
 
+def get_service_file(facts)
+    case facts[:operatingsystem]
+    when "Ubuntu"
+      case facts[:operatingsystemrelease]
+      when /^(14|6)/
+        '/etc/init.d/netdata'
+      else
+        '/etc/systemd/system/netdata.service'
+      end
+    when 'CentOS'
+      case facts[:operatingsystemrelease]
+      when /^(7).*/
+        '/etc/systemd/system/netdata.service'
+      else
+        '/etc/init.d/netdata'
+      end
+    end
+end
+
 def get_content(subject, title)
   is_expected.to contain_file(title)
   content = subject.resource('file', title).send(:parameters)[:content]

@@ -9,17 +9,12 @@ describe 'netdata' do
         facts
       end
 
-      facts.merge!({ 
+      facts.merge!({
         :is_pe    => false,
         :selinux  => false,
       })
 
-      case facts[:operatingsystemrelease]
-        when /^(14|6)/
-          service_file = '/etc/init.d/netdata'
-      else
-          service_file = '/etc/systemd/system/netdata.service'
-      end
+      service_file = get_service_file facts
 
       let(:params) do
         {
