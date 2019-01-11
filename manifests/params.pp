@@ -1,6 +1,5 @@
 #class netdata::params
 class netdata::params {
-
   case $::osfamily {
     'RedHat': {
       if $::operatingsystemmajrelease < '7' {
@@ -28,6 +27,16 @@ class netdata::params {
             $service_filename = 'netdata.service'
             $service_filesrc  = 'netdata.service'
             $service_filemode = '0644'
+          }
+        }
+        'Debian': {
+          if $::operatingsystemmajrelease =~ /^9.*/ {
+            $service_filepath = '/etc/systemd/system/multi-user.target.wants'
+            $service_filename = 'netdata.service'
+            $service_filesrc  = 'netdata.service'
+            $service_filemode = '0644'
+          } else {
+              fail("${::hostname}: This module does not support ${::osfamily} - ${::operatingsystem} ${::operatingsystemrelease}")
           }
         }
         default: {fail("${::hostname}: This module does not support ${::osfamily} - ${::operatingsystem} ${::operatingsystemrelease}")}
